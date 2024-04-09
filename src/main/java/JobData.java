@@ -6,7 +6,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 
@@ -28,7 +27,6 @@ public class JobData {
      * @return List of all of the values of the given field
      */
     public static ArrayList<String> findAll(String field) {
-
         // load data, if not already loaded
         loadData();
 
@@ -36,7 +34,6 @@ public class JobData {
 
         for (HashMap<String, String> row : allJobs) {
             String aValue = row.get(field);
-
             if (!values.contains(aValue)) {
                 values.add(aValue);
             }
@@ -46,36 +43,30 @@ public class JobData {
     }
 
     public static ArrayList<HashMap<String, String>> findAll() {
-
         // load data, if not already loaded
         loadData();
 
-        return allJobs;
+        return new ArrayList<>(allJobs);
     }
 
     /**
      * Returns results of search the jobs data by key/value, using
-     * inclusion of the search term.
+     * case-insensitive inclusion of the search term.
      *
-     * For example, searching for employer "Enterprise" will include results
-     * with "Enterprise Holdings, Inc".
-     *
-     * @param column   Column that should be searched.
-     * @param value Value of teh field to search for
+     * @param column Column that should be searched.
+     * @param value Value of the field to search for
      * @return List of all jobs matching the criteria
      */
     public static ArrayList<HashMap<String, String>> findByColumnAndValue(String column, String value) {
-
         // load data, if not already loaded
         loadData();
 
         ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+        String lowerCaseValue = value.toLowerCase();
 
         for (HashMap<String, String> row : allJobs) {
-
             String aValue = row.get(column);
-
-            if (aValue.contains(value)) {
+            if (aValue.toLowerCase().contains(lowerCaseValue)) {
                 jobs.add(row);
             }
         }
@@ -84,33 +75,43 @@ public class JobData {
     }
 
     /**
-     * Search all columns for the given term
+     * Search all columns for the given term in a case-insensitive manner.
      *
      * @param value The search term to look for
-     * @return      List of all jobs with at least one field containing the value
+     * @return List of all jobs with at least one field containing the value
      */
     public static ArrayList<HashMap<String, String>> findByValue(String value) {
-
         // load data, if not already loaded
         loadData();
 
-        // TODO - implement this method
-        return null;
+        ArrayList<HashMap<String, String>> jobs = new ArrayList<>();
+        String lowerCaseValue = value.toLowerCase();
+
+        for (HashMap<String, String> row : allJobs) {
+            boolean isAdded = false; // Ensure a job is only added once
+            for (String key : row.keySet()) {
+                String aValue = row.get(key);
+                if (aValue.toLowerCase().contains(lowerCaseValue) && !isAdded) {
+                    jobs.add(new HashMap<>(row));
+                    isAdded = true;
+                }
+            }
+        }
+
+        return jobs;
     }
 
     /**
-     * Read in data from a CSV file and store it in a list
+     * Read in data from a CSV file and store it in a list.
      */
     private static void loadData() {
-
         // Only load data once
         if (isDataLoaded) {
             return;
         }
 
         try {
-
-            // Open the CSV file and set up pull out column header info and records
+            // Open the CSV file and set up to pull out column header info and records
             Reader in = new FileReader(DATA_FILE);
             CSVParser parser = CSVFormat.RFC4180.withFirstRecordAsHeader().parse(in);
             List<CSVRecord> records = parser.getRecords();
@@ -130,7 +131,7 @@ public class JobData {
                 allJobs.add(newJob);
             }
 
-            // flag the data as loaded, so we don't do it twice
+            // Flag the data as loaded, so we don't do it twice
             isDataLoaded = true;
 
         } catch (IOException e) {
