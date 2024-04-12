@@ -1,6 +1,5 @@
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Map;
 import java.util.Scanner;
 
 /**
@@ -38,6 +37,7 @@ public class TechJobs {
 
                 String columnChoice = getUserSelection("List", columnChoices);
 
+                assert columnChoice != null;
                 if (columnChoice.equals("all")) {
                     printJobs(JobData.findAll());
                 } else {
@@ -73,11 +73,12 @@ public class TechJobs {
     private static String getUserSelection(String menuHeader, HashMap<String, String> choices) {
 
         int choiceIdx = -1;
-        Boolean validChoice = false;
+        boolean validChoice = false;
         String[] choiceKeys = new String[choices.size()];
 
-        // Put the choices in an ordered structure so we can
+        // Put the choices in an ordered structure, so we can
         // associate an integer with each one
+
         int i = 0;
         for (String choiceKey : choices.keySet()) {
             choiceKeys[i] = choiceKey;
@@ -90,7 +91,7 @@ public class TechJobs {
 
             // Print available choices
             for (int j = 0; j < choiceKeys.length; j++) {
-                System.out.println("" + j + " - " + choices.get(choiceKeys[j]));
+                System.out.println(j + " - " + choices.get(choiceKeys[j]));
             }
 
             String userInput = in.nextLine();
@@ -118,15 +119,23 @@ public class TechJobs {
 
     private static void printJobs(ArrayList<HashMap<String, String>> someJobs) {
         if (someJobs.isEmpty()) {
-            System.out.println("No jobs found.");
+            System.out.print("No Results");
             return;
         }
 
         for (HashMap<String, String> job : someJobs) {
             System.out.println("\n*****");
-            for (Map.Entry<String, String> entry : job.entrySet()) {
-                System.out.println(entry.getKey() + ": " + entry.getValue());
-            }
+
+            System.out.println("position type: " + job.getOrDefault("position type", "Data not available"));
+
+            System.out.println("name: " + job.getOrDefault("name", "Data not available"));
+
+            System.out.println("employer: " + job.getOrDefault("employer", "Data not available"));
+
+            System.out.println("location: " + job.getOrDefault("location", "Data not available"));
+
+            System.out.println("core competency: " + job.getOrDefault("core competency", "Data not available"));
+
             System.out.println("*****");
         }
     }
