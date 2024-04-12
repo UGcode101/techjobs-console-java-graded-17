@@ -1,4 +1,5 @@
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Scanner;
 
@@ -37,13 +38,11 @@ public class TechJobs {
 
                 String columnChoice = getUserSelection("List", columnChoices);
 
-                assert columnChoice != null;
                 if (columnChoice.equals("all")) {
                     printJobs(JobData.findAll());
                 } else {
-
                     ArrayList<String> results = JobData.findAll(columnChoice);
-
+                    Collections.sort(results); // Sort results alphabetically
                     System.out.println("\n*** All " + columnChoices.get(columnChoice) + " Values ***");
 
                     // Print list of skills, employers, etc
@@ -59,7 +58,6 @@ public class TechJobs {
                 System.out.println("\nSearch term:");
                 String searchTerm = in.nextLine();
 
-                assert searchField != null;
                 if (searchField.equals("all")) {
                     printJobs(JobData.findByValue(searchTerm));
                 } else {
@@ -69,15 +67,11 @@ public class TechJobs {
         }
     }
 
-    // Returns the key of the selected item from the choices Dictionary
     private static String getUserSelection(String menuHeader, HashMap<String, String> choices) {
 
         int choiceIdx = -1;
         boolean validChoice = false;
         String[] choiceKeys = new String[choices.size()];
-
-        // Put the choices in an ordered structure, so we can
-        // associate an integer with each one
 
         int i = 0;
         for (String choiceKey : choices.keySet()) {
@@ -89,7 +83,6 @@ public class TechJobs {
 
             System.out.println("\n" + menuHeader);
 
-            // Print available choices
             for (int j = 0; j < choiceKeys.length; j++) {
                 System.out.println(j + " - " + choices.get(choiceKeys[j]));
             }
@@ -105,7 +98,6 @@ public class TechJobs {
                 continue;
             }
 
-            // Validate user's input
             if (choiceIdx < 0 || choiceIdx >= choiceKeys.length) {
                 System.out.println("Invalid choice. Try again.");
             } else {
@@ -125,17 +117,11 @@ public class TechJobs {
 
         for (HashMap<String, String> job : someJobs) {
             System.out.println("\n*****");
-
             System.out.println("position type: " + job.getOrDefault("position type", "Data not available"));
-
             System.out.println("name: " + job.getOrDefault("name", "Data not available"));
-
             System.out.println("employer: " + job.getOrDefault("employer", "Data not available"));
-
             System.out.println("location: " + job.getOrDefault("location", "Data not available"));
-
             System.out.println("core competency: " + job.getOrDefault("core competency", "Data not available"));
-
             System.out.println("*****");
         }
     }
